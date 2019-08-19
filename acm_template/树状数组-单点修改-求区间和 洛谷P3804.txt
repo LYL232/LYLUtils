@@ -1,0 +1,78 @@
+如题，已知一个数列，你需要进行下面两种操作：
+
+1.将某一个数加上x
+
+2.求出某区间每一个数的和
+
+输入输出格式
+输入格式：
+第一行包含两个整数N、M，分别表示该数列数字的个数和操作的总个数。
+
+第二行包含N个用空格分隔的整数，其中第i个数字表示数列第i项的初始值。
+
+接下来M行每行包含3个整数，表示一个操作，具体如下：
+
+操作1： 格式：1 x k 含义：将第x个数加上k
+
+操作2： 格式：2 x y 含义：输出区间[x,y]内每个数的和
+
+输出格式：
+输出包含若干行整数，即为所有操作2的结果。
+
+输入输出样例
+输入样例#1： 
+5 5
+1 5 4 2 3
+1 1 3
+2 2 5
+1 3 -1
+1 4 2
+2 1 4
+输出样例#1： 
+14
+16
+说明
+
+#include <bits/stdc++.h>
+using namespace std;
+const int MAXN=5e5+10;
+int n,m,a,b,c,tree[MAXN];
+int lowbit(int x)
+{
+    return x&(-x);
+}
+void add(int x,int k)
+{
+    while(x<=n)
+    {
+        tree[x]+=k;
+        x+=lowbit(x);
+    }
+}
+int sum(int x)
+{
+    int ans=0;
+    while(x)
+    {
+        ans+=tree[x];
+        x-=lowbit(x);
+    }
+    return ans;
+}
+int main()
+{
+    scanf("%d%d",&n,&m);
+    for(int i=1;i<=n;i++)
+    {
+        scanf("%d",&a);
+        add(i,a);
+    }
+    for(int i=1;i<=m;i++)
+    {
+        scanf("%d%d%d",&a,&b,&c);
+        if(a==1)add(b,c);
+        else
+            printf("%d\n",sum(c)-sum(b-1));
+    }
+    return 0;
+}

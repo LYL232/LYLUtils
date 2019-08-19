@@ -1,0 +1,102 @@
+题目描述
+给定n个模式串和1个文本串，求有多少个模式串在文本串里出现过。
+
+输入输出格式
+输入格式：
+第一行一个n，表示模式串个数；
+
+下面n行每行一个模式串；
+
+下面一行一个文本串。
+
+输出格式：
+一个数表示答案
+
+输入输出样例
+输入样例#1： 
+2
+a
+aa
+aa
+输出样例#1： 
+2
+
+
+#include<bits/stdc++.h>
+using namespace std;
+const int MAXN=5e5+10;
+struct ACA
+{
+    int cnt/*当前节点数,用于临时记录'新建'节点*/,
+    child[MAXN][26],fail[MAXN],tag[MAXN];
+    ACA():cnt(0)
+    {
+        memset(child,0,MAXN*26*sizeof(int));
+        memset(tag,0,MAXN*sizeof(int));
+        memset(fail,0,MAXN*sizeof(int));
+    }
+    void addWord(const char* s)
+    {
+        int ptr=0,slen=strlen(s);
+        for(int j=0;j<slen;++j)
+        {
+            int index=s[j]-'a';
+            if(!child[ptr][index])child[ptr][index]=++cnt;
+            ptr=child[ptr][index];
+        }
+        ++tag[ptr];
+    }
+    void build()
+    {
+        queue<int>q;
+        for(int i=0;i<26;++i)
+            if(child[0][i])
+            {
+                q.push(child[0][i]);
+                fail[child[0][i]]=0;
+            }
+        while(q.size())
+        {
+            int ptr=q.front();q.pop();
+            for(int i=0;i<26;++i)
+                if(child[ptr][i])
+                {
+                    fail[child[ptr][i]]=child[fail[ptr]][i];
+                    q.push(child[ptr][i]);
+                }
+                else child[ptr][i]=child[fail[ptr]][i];
+        }
+    }
+
+    int query(const char *text)
+    {
+        int res=0,ptr=0,len=strlen(text);
+        for(int i=0;i<len;++i)
+        {
+            ptr=child[ptr][text[i]-'a'];
+            for(int t=ptr;t&&~tag[t];t=fail[t])
+            {
+                res+=tag[t];
+                tag[t]=-1;
+            }
+        }
+        return res;
+    }
+}aca;
+char str[MAXN*2];
+int main()
+{
+    int n;
+    scanf("%d",&n);
+    for(int i=0;i<n;++i)
+    {
+        scanf("%s",str);
+        aca.addWord(str);
+    }
+    aca.build();
+    scanf("%s",str);
+    printf("%d\n",aca.query(str));
+    return 0;
+}
+
+

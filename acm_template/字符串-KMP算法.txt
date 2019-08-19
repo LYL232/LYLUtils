@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+void getnext(const string& s,int next[])
+{
+    next[0]=0;
+    size_t ssize=s.size();
+    if(ssize<=1)return;
+    next[1]=s[0]==s[1];
+    for(size_t i=1,j=0;i<ssize;++i)
+    {
+        while(j&&s[i]!=s[j])j=next[j-1];
+        if(s[i]==s[j])j++;
+        next[i+1]=j;
+    }
+}
+void kmp(const string&s,const string&ss,const int next[])
+{
+    size_t ptrss=0;
+    for(size_t i=0,ssize=s.size();i<ssize;++i)
+    {
+        if(s[i]==ss[ptrss])
+        {
+            ++ptrss;
+            if(ptrss>=ss.size())
+            {
+                cout<<i-ss.size()+1<<endl;
+                i=i-ss.size()+2;
+                ptrss=0;
+            }
+        }
+        else
+            ptrss=next[ptrss];
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+    string s,ss;
+    cin>>s>>ss;
+    int* n=new int[ss.size()];
+    getnext(ss,n);
+    /*for(int i=0;i<ss.size();++i)
+        cout<<n[i]<<endl;*/
+    kmp(s,ss,n);
+    delete n;
+    return 0;
+}

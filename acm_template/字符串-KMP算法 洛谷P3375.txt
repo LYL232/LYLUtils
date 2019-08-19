@@ -1,0 +1,72 @@
+如题，给出两个字符串s1和s2，其中s2为s1的子串，求出s2在s1中所有出现的位置。
+
+为了减少骗分的情况，接下来还要输出子串的前缀数组next。
+
+（如果你不知道这是什么意思也不要问，去百度搜[kmp算法]学习一下就知道了。）
+
+输入输出格式
+输入格式：
+第一行为一个字符串，即为s1
+
+第二行为一个字符串，即为s2
+
+输出格式：
+若干行，每行包含一个整数，表示s2在s1中出现的位置
+
+接下来1行，包括length(s2)个整数，表示前缀数组next[i]的值。
+
+输入输出样例
+输入样例#1： 
+ABABABC
+ABA
+输出样例#1： 
+1
+3
+0 0 1 
+
+#include<bits/stdc++.h>
+#define CPPINI ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+using namespace std;
+const int MAXN=1e6+10;
+int next[MAXN];
+void getNext(const string&s)
+{
+	next[0]=-1;
+	int i=0,j =-1,len=s.length();
+	while(i<len)
+	{
+		if (j==-1||s[i]==s[j])
+		{
+			++i;++j;
+			next[i]=j;
+		}
+		else j=next[j];
+	}
+}
+void KMP(const string&s,const string&p)
+{
+	int i=0,j=0,slen=s.length(),plen=p.length();
+	while (i<slen)
+    {
+        if (j==-1||s[i]==p[j]){i++;j++;}
+	 	else j =next[j];
+	 	if(j>=plen)
+        {
+            cout<<i-j+1<<endl;
+            j=next[j];
+        }
+    }
+}
+
+int main()
+{
+    CPPINI;
+    string s,ss;
+    cin>>s>>ss;
+    getNext(ss);
+    KMP(s,ss);
+    for(int i=1;i<=ss.length();++i)
+        cout<<next[i]<<' ';
+    cout<<endl;
+    return 0;
+}

@@ -1,0 +1,87 @@
+题目描述
+暴力枚举/SPFA/Bellman-ford/奇怪的贪心/超神搜索
+
+寻找一个从顶点1所能到达的负环，负环定义为：一个边权之和为负的环。
+
+输入输出格式
+输入格式：
+第一行一个正整数T表示数据组数，对于每组数据：
+
+第一行两个正整数N M，表示图有N个顶点，M条边
+
+接下来M行，每行三个整数a b w，表示a->b有一条权值为w的边（若w<0则为单向，否则双向）
+
+输出格式：
+共T行。对于每组数据，存在负环则输出一行"YE5"(不含引号)，否则输出一行"N0"(不含引号)。
+
+
+#include <bits/stdc++.h>
+using namespace std;
+const int MAXN=2005,MAXM=3005,MAXINT=1e9;
+struct EDGE
+{
+    int next,to,v;
+}edge[MAXM*2];
+int n,m,w,t,a,b,tot,head[MAXN],cnt[MAXN],dis[MAXN];
+bool vis[MAXN];//是否已经入列的判断
+int main()
+{
+    scanf("%d",&t);
+    while(t--)
+    {
+        tot=0;
+        memset(cnt,0,sizeof(int)*MAXN);
+        memset(head,0,sizeof(int)*MAXN);
+        memset(vis,0,sizeof(bool)*MAXN);
+        scanf("%d%d",&n,&m);
+        
+        for(int i=2;i<=n;++i)dis[i]=MAXINT;
+        for(int i=1;i<=m;++i)
+        {
+            scanf("%d%d%d",&a,&b,&w);
+            if(w>=0)
+            {
+                edge[++tot].next=head[b];
+                edge[tot].to=a;
+                edge[tot].v=w;
+                head[b]=tot;
+            }
+            edge[++tot].next=head[a];
+            edge[tot].to=b;
+            edge[tot].v=w;
+            head[a]=tot;
+        }
+        queue<int>q;
+        q.push(1);cnt[1]=1;dis[1]=0;vis[1]=1;
+        bool success=true;
+        while(q.size()&&success)
+        {
+            int node=q.front(),edgeId=head[node];q.pop();
+            vis[node]=0;
+            //printf("front(%d,%d)\n",node,dis[node]);
+            while(edgeId)
+            {
+                int to=edge[edgeId].to;
+                if(dis[node]+edge[edgeId].v<dis[to])
+                {
+                    cnt[to]=cnt[node]+1;
+                    //printf("cnt[%d]=%d\n",to,cnt[to]+1);
+                    if(cnt[to]>=n&&edge[edgeId].v<0)
+                    {
+                        success=false;
+                        break;
+                    }
+                    dis[to]=dis[node]+edge[edgeId].v;
+                    if(!vis[to])
+                    {
+                        vis[to]=1;
+                        q.push(to);
+                    }
+                }
+                edgeId=edge[edgeId].next;
+            }
+        }
+        printf("%s\n",!success?"YE5":"N0");
+    }
+    return 0;
+}

@@ -1,0 +1,94 @@
+
+题目描述
+给定一个 N 个点，M 条有向边的带非负权图，请你计算从 SS 出发，到每个点的距离。
+
+数据保证你能从 S 出发到任意点。
+
+输入输出格式
+输入格式：
+第一行为三个正整数 N,M,S。 第二行起 M 行，每行三个非负整数 u, v, w 
+表示从 u到 v有一条权值为 w的边。
+
+输出格式：
+输出一行 N 个空格分隔的非负整数，表示 S 到每个点的距离。
+
+输入输出样例
+输入样例#1： 
+4 6 1
+1 2 2
+2 3 2
+2 4 1
+1 3 5
+3 4 3
+1 4 4
+输出样例#1： 
+0 2 4 3
+100000≤N≤100000；
+
+200000≤M≤200000；
+
+
+// luogu-judger-enable-o2
+#include<bits/stdc++.h>
+using namespace std;
+const int MAXN=100005,MAXM=200005,MAXW=1e9+100;
+struct EDGE
+{
+    int next/*相当于链表的next*/,to,v;
+}edge[MAXM];
+struct PQNODE
+{
+    int dis,id;
+    bool operator <(const PQNODE&n)const
+    {
+        return dis>n.dis;
+    }
+};
+int n,m,s,dis[MAXN],head[MAXN],u,v,w,cnt=1;
+bool vis[MAXN];
+int main()
+{
+    for(int i=0;i<MAXN;++i)
+    {
+        dis[i]=MAXW;
+        vis[i]=0;
+        head[i]=0;
+    }
+    scanf("%d%d%d",&n,&m,&s);
+    for(int i=0;i<m;++i)
+    {
+        scanf("%d%d%d",&u,&v,&w);
+        edge[cnt].next=head[u];
+        edge[cnt].to=v;
+        edge[cnt].v=w;
+        head[u]=cnt++;
+    }
+    priority_queue<PQNODE>pq;
+    dis[s]=0;
+    pq.push((PQNODE){0,s});
+    while(pq.size())
+    {
+        int pos=pq.top().id,nodeId=head[pos];
+        pq.pop();
+        //printf("(%d %d %d)\n",from,to,disNow);
+        if(vis[pos])continue;
+        vis[pos]=1;
+        //printf("pos=%d\n",pos);
+        while(nodeId)
+        {
+            //printf("id=%d\n",nodeId);
+            int next=edge[nodeId].to;
+            if(dis[next]>dis[pos]+edge[nodeId].v)
+            {
+                dis[next]=dis[pos]+edge[nodeId].v;
+                if(!vis[next])pq.push((PQNODE){dis[next],next});
+            }
+            nodeId=edge[nodeId].next;
+        }
+    }
+    for(int i=1;i<=n;++i)
+        printf("%d ",dis[i]);
+    putchar('\n');
+    return 0;
+}
+

@@ -1,0 +1,141 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+struct TrieNode
+{
+    char character;
+    int tag;
+    TrieNode*fail,*child[26];
+    TrieNode():fail(0),tag(0),character(0)
+    {
+        for(int i=0;i<26;++i)
+            child[i]=NULL;
+    }
+    TrieNode(char c):fail(0),tag(0),character(c)
+    {
+        for(int i=0;i<26;++i)
+            child[i]=NULL;
+    }
+    ~TrieNode()
+    {
+        for(int i=0;i<26;++i)
+            delete child[i];
+    }
+};
+
+struct TrieTree
+{
+    TrieNode*root;
+
+    TrieTree(const vector<string>&vec):root(new TrieNode('@'))
+    {
+        root->fail=0;
+        for(int i=0;i<vec.size();++i)
+        {
+            TrieNode*ptr=root;
+            const string &s=vec[i];
+            for(int j=0;j<s.size();++j)
+            {
+                int index=s[j]-'a';
+                if(!(ptr->child[index]))ptr->child[index]=new TrieNode(s[j]);
+                ptr=ptr->child[index];
+                if(j==s.size()-1)ptr->tag++;
+            }
+        }
+
+        queue<TrieNode*>q;
+        for(int i=0;i<26;++i)
+            if(root->child[i])
+            {
+                q.push(root->child[i]);
+                root->child[i]->fail=root;
+            }
+
+        while(q.size())
+        {
+            TrieNode*ptr=q.front();q.pop();
+            for(int i=0;i<26;++i)
+            {
+                if(!(ptr->child[i]))continue;
+                TrieNode*child=ptr->child[i],*temp=ptr->fail;
+                q.push(child);
+                int index=child->character-'a';
+                while(1)
+                {
+                    if(temp->child[index])
+                    {
+                        child->fail=temp->child[index];
+                        break;
+                    }
+                    else
+                        if(!(temp->fail))
+                        {
+                            child->fail=root;
+                            break;
+                        }
+                        else
+                            temp=temp->fail;
+                }
+
+            }
+        }
+
+    }
+
+    int query(const string &text)const
+    {
+        TrieNode*ptr=root;
+        int res=0;
+        for(int i=0;i<text.size();++i)
+        {
+            int index=text[i]-'a';
+            while(!(ptr->child[index])&&ptr!=root)ptr=ptr->fail;
+            ptr=ptr->child[index];
+            ptr=(!ptr)?root:ptr;
+            TrieNode*temp=ptr;
+            while(temp!=root&&temp->tag!=-1)
+            {
+                res+=temp->tag;
+                temp->tag=-1;
+                temp=temp->fail;
+            }
+        }
+        return res;
+    }
+
+    ~TrieTree(){delete root;}
+
+};
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie();
+    cout.tie();
+    int t,n;
+    cin>>t;
+    while(t--)
+    {
+        cin>>n;
+        vector<string> v;
+        for(int i=0;i<n;++i)
+        {
+            string s;
+            cin>>s;
+            v.push_back(s);
+            s.clear();
+        }
+        TrieTree tree(v);
+        string s;
+        cin>>s;
+        cout<<tree.query(s)<<endl;
+    }
+    return 0;
+}
+
+使用方法:输入测试样例数量t
+再输入词语数量n
+输入n个词
+再输入匹配串得出结果:出现了多少个单词
+注意,同一个词如果输入两次,在匹配串中出现一次算两次
+

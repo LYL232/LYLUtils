@@ -1,0 +1,95 @@
+第一行输入n；表示n个数
+第2~n+1行输入n个数，表示线段各点初始值
+然后输入m，表示m个操作。
+后面跟上m行，
+每行第一个数为1，后接3个数a，b，x表示将[a,b]的数加上x
+第一个数为2，后接1个数x，表示询问此时x的值，输出x的值
+
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn=1e5+10;
+int tree[maxn*4],tag[maxn*4],a[maxn];
+int n,q;
+void ini(int ln,int rn,int index)
+{
+    if(ln>=rn)
+    {
+        tree[index]=a[ln];
+        return;
+    }
+    int mid=(ln+rn)>>1;
+    ini(ln,mid,index<<1);
+    ini(mid+1,rn,(index<<1)+1);
+}
+void pushdown(int index)
+{
+    if(index<=maxn*2&&tag[index])
+    {
+        tag[index<<1]+=tag[index];
+        tag[index<<1|1]+=tag[index];
+    }
+    tree[index]+=tag[index];
+    tag[index]=0;
+}
+void update(int ln,int rn,int index,int l,int r,int change)
+{
+    if(l>rn||r<ln)return;
+    pushdown(index);
+    if(l<=ln&&r>=rn)
+    {
+        tag[index]=change;
+        //printf("tag%d->(%d,%d)\n",change,ln,rn);
+        return;
+    }
+    int mid=(ln+rn)>>1;
+    if(r<=mid)
+    {
+        update(ln,mid,index*2,l,r,change);
+        return;
+    }
+    if(l>mid)
+    {
+        update(mid+1,rn,index*2+1,l,r,change);
+        return;
+    }
+    update(ln,mid,index*2,l,mid,change);
+    update(mid+1,rn,index*2+1,mid+1,r,change);
+}
+int quiry(int ln,int rn,int index,int x)
+{
+    pushdown(index);
+    if(ln>=rn)
+        return tree[index];
+    int mid=(ln+rn)>>1;
+    if(x<=mid)
+        return quiry(ln,mid,index*2,x);
+    else
+        return quiry(mid+1,rn,index*2+1,x);
+}
+int main()
+{
+    memset(tree,0,4*maxn*sizeof(int));
+    memset(tag,0,4*maxn*sizeof(int));
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++)
+        scanf("%d",a+i);
+    ini(1,maxn,1);
+    scanf("%d",&q);
+    int x,y,z,w;
+    for(int i=0;i<q;i++)
+    {
+        scanf("%d",&x);
+        if(x==1)
+        {
+            scanf("%d%d%d",&y,&z,&w);
+            update(1,maxn,1,y,z,w);
+        }
+        else
+        {
+            scanf("%d",&y);
+            printf("%d\n",quiry(1,maxn,1,y));
+        }
+
+    }
+    return 0;
+}
