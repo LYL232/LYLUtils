@@ -40,23 +40,34 @@ struct LINK {
         last[ori_next] = id;
     }
 
-    void print() {
+    string get_print_string() const {
+        string s;
+        char buff[20];
         for(int i = head; ; i = next[i]) {
-            cout << "[" << i << ":" << node[i] << "]";
+            sprintf(buff,"[%d:%d]", i, node[i]);
+            s.append(buff);
             if(next[i]) {
-                cout << "->";
+                s.append("->");
             } else {
                 break;
             }
         }
-        cout << endl;
+        return s;
+    }
+
+    void print() const{
+        cout<< get_print_string() << endl;
+    }
+
+    bool operator < (const LINK& that) const {
+        return get_print_string().compare(that.get_print_string()) < 0;
     }
 }link_list;
 
 int depth = 0;
 bool search(int ptr) {
-    cout << "search:(" << ptr << ")" << "l_now=" << l_now << " depth = "<< ++depth << endl;
-    link_list.print();
+    //cout << "search:(" << ptr << ")" << "l_now=" << l_now << " depth = "<< ++depth << endl;
+    //link_list.print();
     // getchar();
     bool res = false;
     for(; ptr && !res; ptr = link_list.next[ptr]) {
@@ -64,7 +75,7 @@ bool search(int ptr) {
         //cout << "ptr=" << ptr <<endl;
         if(link_list.node[ptr] == l_now) {
             if(!(link_list.next[ptr])) {
-                --depth;
+                //--depth;
                 return true;
             }
             continue;
@@ -73,27 +84,28 @@ bool search(int ptr) {
         for(int next_ptr = link_list.next[ptr]; next_ptr; next_ptr = link_list.next[next_ptr]) {
             //cout << "next_ptr=" << next_ptr <<endl;
             if(link_list.node[ptr] + link_list.node[next_ptr] <= l_now) {
-                cout << "merge (" << ptr << " , " << next_ptr << ")" << endl;
+                //cout << "merge (" << ptr << " , " << next_ptr << ")" << endl;
+                //cout << "path: " << path_str << endl;
                 int next_ptr_data = link_list.node[next_ptr],
                         last_node = link_list.last[next_ptr];
                 link_list.delete_node(next_ptr);
+                //link_list.print();
                 link_list.node[ptr] = link_list.node[ptr] + link_list.node[next_ptr];
                 res = search(ptr);
                 if(res) {
                     break;
                 }
-                cout << "reinsert (" << ptr << " , " << next_ptr << ")" << endl;
+                //cout << "reinsert (" << ptr << " , " << next_ptr << ")" << endl;
                 link_list.reinsert_node_after_node(next_ptr, last_node, next_ptr_data);
                 link_list.node[ptr] = ptr_data;
-                link_list.print();
             }
         }
         if(link_list.node[ptr] != l_now) {
-            --depth;
+            //--depth;
             return false;
         }
     }
-    --depth;
+    //--depth;
     return res;
 }
 
