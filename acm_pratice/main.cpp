@@ -109,6 +109,10 @@ bool search(int ptr) {
     return res;
 }
 
+bool cmp(int a, int b) {
+    return a > b;
+}
+
 int main()
 {
     ios::sync_with_stdio(false);
@@ -123,10 +127,15 @@ int main()
             cnt++;
         }
     }
+    sort(num, num + cnt, cmp);
     link_list.init(num, cnt);
     while(true) {
         while(l_now < tot_len && tot_len % l_now != 0) {
             l_now++;
+            if(l_now > tot_len) {
+                cout << tot_len << endl;
+                return 0;
+            }
         }
         link_list.init(num, cnt);
         if(search(link_list.head)) {
