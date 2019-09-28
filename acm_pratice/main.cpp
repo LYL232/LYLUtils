@@ -7,31 +7,42 @@ const int LINK_MAX_LENGTH = MAX_N;
 struct LINK {
     int head, next[LINK_MAX_LENGTH + 1],
             last[LINK_MAX_LENGTH + 1],
-            node[LINK_MAX_LENGTH + 1];
+            node[LINK_MAX_LENGTH + 1],
+            num[LINK_MAX_LENGTH + 1];
 
-    void init(int* data, int data_len) {
+    void init(const int* data, int data_len) {
         head = 1;
-        next[data_len]  = 0;
+        int nodes = 0, last_data = -1, next_node = 1;
+        last[0] = 0;
         for(int i = 1; i <= data_len; ++i) {
-            if (i < data_len) {
-                next[i] = i + 1;
-            }
-            last[i] = i - 1;
-            node[i] = num[i - 1];
+                if(data[i] == last_data) {
+                    num[nodes]++;
+                } else {
+                    last[next_node] = nodes;
+                    next[nodes] = next_node;
+                    num[next_node] = 1;
+                    next[next_node] = 0;
+                    node[next_node] = data[i];
+                    ++nodes;
+                }
         }
     }
 
     // 删除id为ptr的node
     void delete_node(int ptr)
     {
-        int last_node = last[ptr],
-                next_node = next[ptr];
-        next[last_node] = next_node;
-        last[next_node] = last_node;
+        if(num[ptr] > 1) {
+            int last_node = last[ptr],
+                    next_node = next[ptr];
+            next[last_node] = next_node;
+            last[next_node] = last_node;
+        } else {
+            num[ptr]--;
+        }
     }
 
-    // 重新将指定id的节点加入id为pos的节点后
-    void reinsert_node_after_node(int id, int pos, int data) {
+    // 在pos的节点插入值为data的节点,如果值
+    void reinsert_node_after_node(int pos, int data) {
         int ori_next = next[pos];
         node[id] = data;
         last[id] = pos;
@@ -40,73 +51,52 @@ struct LINK {
         last[ori_next] = id;
     }
 
-    string get_print_string() const {
-        string s;
-        char buff[20];
-        for(int i = head; ; i = next[i]) {
-            sprintf(buff,"[%d:%d]", i, node[i]);
-            s.append(buff);
-            if(next[i]) {
-                s.append("->");
-            } else {
-                break;
-            }
-        }
-        return s;
-    }
-
-    void print() const{
-        cout<< get_print_string() << endl;
-    }
-
-    bool operator < (const LINK& that) const {
-        return get_print_string().compare(that.get_print_string()) < 0;
-    }
 }link_list;
 
-int depth = 0;
+int continue_count_1 = 0, continue_count_2 = 0;
 bool search(int ptr) {
-    //cout << "search:(" << ptr << ")" << "l_now=" << l_now << " depth = "<< ++depth << endl;
-    //link_list.print();
-    // getchar();
-    bool res = false;
-    for(; ptr && !res; ptr = link_list.next[ptr]) {
+    int last_len = -1;
+    for(; ptr; ptr = link_list.next[ptr]) {
         int ptr_data = link_list.node[ptr];
-        //cout << "ptr=" << ptr <<endl;
-        if(link_list.node[ptr] == l_now) {
+        if(ptr_data == l_now) {
             if(!(link_list.next[ptr])) {
-                //--depth;
                 return true;
             }
+            continue_count_1++;
             continue;
         }
 
         for(int next_ptr = link_list.next[ptr]; next_ptr; next_ptr = link_list.next[next_ptr]) {
-            //cout << "next_ptr=" << next_ptr <<endl;
+            if(last_len == link_list.node[next_ptr]) {
+                continue_count_2++;
+                continue;
+            }
+            last_len = link_list.node[next_ptr];
             if(link_list.node[ptr] + link_list.node[next_ptr] <= l_now) {
-                //cout << "merge (" << ptr << " , " << next_ptr << ")" << endl;
-                //cout << "path: " << path_str << endl;
                 int next_ptr_data = link_list.node[next_ptr],
-                        last_node = link_list.last[next_ptr];
+                        last_node = link_list.last[next_ptr],
+                                ptr_len = link_list.node[ptr] + link_list.node[next_ptr];
                 link_list.delete_node(next_ptr);
-                //link_list.print();
-                link_list.node[ptr] = link_list.node[ptr] + link_list.node[next_ptr];
-                res = search(ptr);
-                if(res) {
-                    break;
+                link_list.node[ptr] = ptr_len;
+                if(search(ptr)) {
+                    return true;
                 }
-                //cout << "reinsert (" << ptr << " , " << next_ptr << ")" << endl;
+                // 到达这个分支说明这一搜索失败了
                 link_list.reinsert_node_after_node(next_ptr, last_node, next_ptr_data);
                 link_list.node[ptr] = ptr_data;
+                if(ptr_len == l_now) {
+                    //如果当前ptr和next_ptr的长度加起来正好等于当前的枚举长度,由于是从大搜索到小的,
+                    // 由端木棍灵活性可知,当前用这根木棍是最长的满足条件的最优木棍,如果到达这里,
+                    // 说明所用木根最优仍失败,则是之前的木棍用法有问题,回溯即可
+                    return false;
+                }
             }
         }
         if(link_list.node[ptr] != l_now) {
-            //--depth;
             return false;
         }
     }
-    //--depth;
-    return res;
+    return false;
 }
 
 bool cmp(int a, int b) {
@@ -122,11 +112,14 @@ int main()
     for(int i = 0; i < n; ++i) {
         cin >> num[cnt];
         if (num[cnt] <= 50) {
+            // 由题意,大于50的过滤掉
             l_now = max(l_now, num[cnt]);
             tot_len += num[cnt];
             cnt++;
         }
     }
+    //排序:由大到小遍历,因为更长的木根灵活性更差
+   // 从灵活性最差的开始,可以减少不必要的搜索
     sort(num, num + cnt, cmp);
     link_list.init(num, cnt);
     while(true) {
@@ -144,5 +137,7 @@ int main()
         l_now++;
     }
     cout << l_now << endl;
+    cout << continue_count_1 << endl;
+    cout << continue_count_2 << endl;
     return 0;
 }
