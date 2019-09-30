@@ -9,7 +9,7 @@ using namespace std;
 
 // 最大能处理数组大小
 const int BIT_MAX_LEN = (int)1e5 +25;
-class BIT {
+class BinaryIndexTree {
 public:
     //清除树中所有数据
     void clear() {
