@@ -1,3 +1,0 @@
-"F:\CLion 2018.1.5\bin\cmake\bin\cmake.exe" -E remove -f CMakeFiles\LYL_UTILS.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\LYL_UTILS.dir/objects.a @CMakeFiles\LYL_UTILS.dir\objects1.rsp
-C:\MinGW\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\LYL_UTILS.dir/objects.a -Wl,--no-whole-archive  -o LYL_UTILS.exe -Wl,--out-implib,libLYL_UTILS.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\LYL_UTILS.dir\linklibs.rsp
