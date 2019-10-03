@@ -30,6 +30,7 @@ public:
     inline void clear() {
         memset(tree, 0, sizeof(tree));
         memset(lazy, 0, sizeof(lazy));
+        data = nullptr;
     }
 
     /**
@@ -37,13 +38,10 @@ public:
      * @param _len 树维护的序列长度
      * @param data 树初始序列指针
      */
-    void build(int _len, const NUM_TYPE *data = nullptr) {
-        if (data == nullptr) {
-            build_impl(1, 1, _len);
-        } else {
-            build_impl(1, 1, _len, data);
-        }
+    void build(int _len, const NUM_TYPE *_data = nullptr) {
+        data = _data;
         len = _len;
+        build_impl(1, 1, len);
     }
 
     /**
@@ -81,6 +79,7 @@ public:
 private:
 
     NUM_TYPE tree[MAX_LEN << 2], lazy[MAX_LEN << 2];
+    const NUM_TYPE *data;
 
     int len;
 
@@ -110,30 +109,7 @@ private:
     }
 
     /**
-     * 带初始序列的构建函数实现函数
-     * @param node 当前节点id
-     * @param l 当前节点所属区间左端点
-     * @param r 当前节点所属区间右端点
-     * @param data 初始序列指针
-     */
-    void build_impl(int node, int l, int r, const NUM_TYPE *data) {
-        lazy[node] = 0;
-        if (l == r) {
-            if (data == nullptr) {
-                tree[node] = 0;
-            } else {
-                tree[node] = data[l];
-            }
-            return;
-        }
-        int mid = (l + r) >> 1;
-        build_impl(left_son(node), l, mid, data);
-        build_impl(right_son(node), mid + 1, r, data);
-        push_up(node);
-    }
-
-    /**
-     * 不带初始序列构建函数的实现函数
+     * 构建函数的实现函数
      * @param node 当前节点id
      * @param l 当前节点所属区间左端点
      * @param r 当前节点所属区间右端点
@@ -141,7 +117,7 @@ private:
     void build_impl(int node, int l, int r) {
         lazy[node] = 0;
         if (l == r) {
-            tree[node] = INIT_NUM;
+            tree[node] = (data == nullptr) ? INIT_NUM : data[l];
             return;
         }
         int mid = (l + r) >> 1;
@@ -254,41 +230,5 @@ private:
 };
 
 #endif //UTILS_SEGMENTTREE_H
-/**
- * 使用示例:
- * 判题网址: https://www.luogu.org/problem/P3374
- */
-/*
-#include <cstdio>
 
-const int MAX_N = (int) 1e5 + 25;
-int n, m, x, y, op;
-long long a[MAX_N], k;
-
-SegmentTree<long long, MAX_N> seg_tree;
-
-void demo1() {
-   scanf("%d %d", &n, &m);
-   for(int i = 1 ; i <= n; ++i) {
-       scanf("%lld", a + i);
-   }
-   seg_tree.build(n, a);
-   while(m--) {
-       scanf("%d", &op);
-       if(op == 1) {
-           scanf("%d %d %lld", &x, &y, &k);
-           if(x==y) {
-               seg_tree.update(x, k);
-           } else {
-               seg_tree.update(x, y, k);
-           }
-       } else {
-           scanf("%d %d", &x, &y);
-           printf("%lld\n", seg_tree.query(x, y));
-       }
-   }
-   seg_tree.clear(); //多组数据时用clear函数
-}
-#pragma clang diagnostic pop
-*/
 #pragma clang diagnostic pop
