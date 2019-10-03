@@ -1,8 +1,8 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #pragma ide diagnostic ignored "OCUnusedStructInspection"
-#ifndef ACM_PRATICE_ARRAYUTILS_H
-#define ACM_PRATICE_ARRAYUTILS_H
+#ifndef LYL_UTILS_ARRAYUTILS_H
+#define LYL_UTILS_ARRAYUTILS_H
 
 #include <cstring>
 #include <algorithm>
@@ -57,6 +57,6 @@ private:
     NUM_TYPE array[MAX_LEN + 1];
 };
 
-#endif //ACM_PRATICE_ARRAYUTILS_H
+#endif //LYL_UTILS_ARRAYUTILS_H
 
 #pragma clang diagnostic pop

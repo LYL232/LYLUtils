@@ -1,8 +1,8 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedStructInspection"
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
-#ifndef UTILS_SEGMENTTREE_H
-#define UTILS_SEGMENTTREE_H
+#ifndef LYL_UTILS_SEGMENTTREE_H
+#define LYL_UTILS_SEGMENTTREE_H
 
 #include <cstring>
 
@@ -229,6 +229,6 @@ private:
 
 };
 
-#endif //UTILS_SEGMENTTREE_H
+#endif //LYL_UTILS_SEGMENTTREE_H
 
 #pragma clang diagnostic pop
