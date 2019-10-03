@@ -3,4 +3,6 @@ project(LYL_UTILS)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(${PROJECT_NAME} main.cpp cpp)
+add_executable(${PROJECT_NAME}
+        cpp
+        main.cpp)
