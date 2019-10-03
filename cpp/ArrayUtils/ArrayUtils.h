@@ -8,7 +8,12 @@
 #include <algorithm>
 
 using namespace std;
-
+/**
+ * 数组工具, 实现一些STL中没有但比较常用的功能
+ * 非静态函数使用前需调用init初始化函数,会复制一份源序列的拷贝
+ * @tparam NUM_TYPE
+ * @tparam MAX_LEN
+ */
 template<typename NUM_TYPE, int MAX_LEN>
 class ArrayUtils {
 public:
@@ -45,22 +50,7 @@ public:
         }
         return cnt;
     }
-    /*
-    使用示例:
-     const int MAX_N = (int)1e5 + 25;
-    ArrayUtils<int, MAX_N> arrayUtils;
 
-    void demo() {
-        int init[] = {0,1,12,13,4,6,7,6,6,12,2,2,3,4,5}, *res = new int[15];
-        arrayUtils.init(init, 14);
-        arrayUtils.discretize(init, res);
-        for(int i = 1; i <= 14; ++i) {
-            printf("%d ", res[i]);
-        }
-        putchar('\n');
-        delete(res);
-    }
-     */
 
 private:
     int len;
