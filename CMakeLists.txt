@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(${PROJECT_NAME}
         cpp
-        main.cpp)
+        main.cpp cpp/algorithms/FastFourierTransfrom.cpp)
