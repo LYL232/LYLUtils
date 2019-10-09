@@ -22,7 +22,7 @@
 
 const int MAX_N = (int) 1e6 + 25;
 
-PersistentSegmentTree<int, MAX_N> persistentSegmentTree;
+PersistentSegmentTree<int> persistentSegmentTree((size_t) MAX_N);
 
 int n, m, a[MAX_N], ver, loc, value, op, ver_root[MAX_N];
 

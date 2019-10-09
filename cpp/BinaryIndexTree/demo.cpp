@@ -18,22 +18,22 @@
 
 const int MAX_N = (int) 5e5 + 25;
 int n, m, x, y, k;
-BinaryIndexTree<long long, MAX_N> binaryIndexTree;
+BinaryIndexTree<long long> binaryIndexTree((size_t) MAX_N);
 
 int main() {
-   scanf("%d %d", &n, &m);
-   binaryIndexTree.init(n);
-   for (int i = 1; i <= n; ++i) {
-       scanf("%d", &x);
-       binaryIndexTree.insert(i, x);
-   }
-   while (m--) {
-       scanf("%d %d %d", &k, &x, &y);
-       if (k == 1) {
-           binaryIndexTree.add(x, y);
-       } else {
-           printf("%lld\n", binaryIndexTree.sum(x, y));
-       }
-   }
-   return 0;
+    scanf("%d %d", &n, &m);
+    binaryIndexTree.init(n);
+    for (int i = 1; i <= n; ++i) {
+        scanf("%d", &x);
+        binaryIndexTree.insert(i, x);
+    }
+    while (m--) {
+        scanf("%d %d %d", &k, &x, &y);
+        if (k == 1) {
+            binaryIndexTree.add(x, y);
+        } else {
+            printf("%lld\n", binaryIndexTree.sum(x, y));
+        }
+    }
+    return 0;
 };

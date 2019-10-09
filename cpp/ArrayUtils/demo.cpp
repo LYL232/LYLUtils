@@ -2,7 +2,7 @@
 #include "ArrayUtils.h"
 
 const int MAX_N = (int) 1e5 + 25;
-ArrayUtils<int, MAX_N> arrayUtils;
+ArrayUtils<int> arrayUtils((size_t) MAX_N);
 
 void demo_discretize() {
     int init[] = {0, 1, 12, 13, 4, 6, 7, 6, 6, 12, 2, 2, 3, 4, 5}, *res = new int[15];

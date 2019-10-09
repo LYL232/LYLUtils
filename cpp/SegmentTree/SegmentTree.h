@@ -5,6 +5,7 @@
 #define LYL_UTILS_SEGMENTTREE_H
 
 #include <cstring>
+#include <malloc.h>
 
 /**
  *线段树:
@@ -20,9 +21,24 @@
  * @tparam MAX_LEN 维护序列最大长度
  * @tparam INIT_NUM 序列每个点的初始值
  */
-template<typename NUM_TYPE, int MAX_LEN, NUM_TYPE INIT_NUM = 0>
+template<typename NUM_TYPE, NUM_TYPE INIT_NUM = 0>
 class SegmentTree {
 public:
+
+    /**
+     * 构造函数,需指定最大处理规模
+     * @param max_process_len
+     */
+    explicit SegmentTree(size_t max_process_len) {
+        tree = (NUM_TYPE *) malloc((max_process_len << 2) * sizeof(NUM_TYPE));
+        lazy = (NUM_TYPE *) malloc((max_process_len << 2) * sizeof(NUM_TYPE));
+        clear();
+    }
+
+    ~SegmentTree() {
+        free(tree);
+        free(lazy);
+    }
 
     /**
      * 清除树中所有数据,但不改变树的结构
@@ -78,7 +94,7 @@ public:
 
 private:
 
-    NUM_TYPE tree[MAX_LEN << 2], lazy[MAX_LEN << 2];
+    NUM_TYPE *tree, *lazy;
     const NUM_TYPE *data;
 
     int len;

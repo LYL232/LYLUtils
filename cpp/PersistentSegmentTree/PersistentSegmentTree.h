@@ -5,6 +5,7 @@
 #define LYL_UTILS_PERSISTENTSEGMENTTREE_H
 
 #include <cstring>
+#include <cstdlib>
 
 /**
  * 持久化线段树:
@@ -14,10 +15,23 @@
  * @tparam MAX_LEN 最大长度
  */
 
-template<typename NUM_TYPE, int MAX_LEN>
+template<typename NUM_TYPE>
 class PersistentSegmentTree {
-    typedef int size_type;
 public:
+
+    /**
+     * 构造函数, 需要指定最大处理规模
+     * @param max_process_len
+     */
+    explicit PersistentSegmentTree(size_t max_process_len) {
+        cnt = len = 0;
+        tree = (Node *) malloc((max_process_len << 6) * sizeof(Node));
+    }
+
+    ~PersistentSegmentTree() {
+        free(tree);
+    }
+
     /**
      * 清除函数:将数据全部清除
      */
@@ -34,7 +48,7 @@ public:
      * @param data 序列指针
      * @return 初始的树版本号(初始树根指针)
      */
-    size_type init(size_type _len, const NUM_TYPE *_data = nullptr) {
+    size_t init(size_t _len, const NUM_TYPE *_data = nullptr) {
         len = _len;
         data = _data;
         return build(1, len);
@@ -47,7 +61,7 @@ public:
      * @param num 更新操作数
      * @return 新版本树根编号
      */
-    size_type update(size_type old_root, size_type pos, NUM_TYPE num) {
+    size_t update(size_t old_root, size_t pos, NUM_TYPE num) {
         //新版本线段树是基于版本old_root而来
         return update(old_root, 1, len, pos, num);
     }
@@ -58,18 +72,18 @@ public:
      * @param x 序列位置
      * @return 查询结果
      */
-    NUM_TYPE query(size_type version, size_type x) {
+    NUM_TYPE query(size_t version, size_t x) {
         //查询版本version下位置x的值
         return query(version, 1, len, x);
     }
 
 private:
     struct Node {
-        size_type left_son, right_son;
+        size_t left_son, right_son;
         NUM_TYPE num;
-    } tree[MAX_LEN << 6];
+    } *tree;
 
-    size_type cnt, len;
+    size_t cnt, len;
 
     const NUM_TYPE *data;
 
@@ -79,14 +93,14 @@ private:
      * @param r 新节点所属区间右端点
      * @return 新构建节点编号
      */
-    size_type build(int l, int r) {
-        size_type new_node = ++cnt;  //动态建树
+    size_t build(int l, int r) {
+        size_t new_node = ++cnt;  //动态建树
         if (l == r) {
             tree[new_node].left_son = tree[new_node].right_son = 0;
             tree[new_node].num = (data == nullptr) ? 0 : data[l];
             return new_node;
         }
-        size_type mid = (l + r) >> 1;
+        size_t mid = (size_t) (l + r) >> 1;
         tree[new_node].left_son = build(l, mid);
         tree[new_node].right_son = build(mid + 1, r);
         return new_node;
@@ -102,13 +116,13 @@ private:
      * @param num 更新操作数
      * @return 新生成的子节点编号
      */
-    size_type update(size_type parent, int node_l, int node_r, size_type pos, NUM_TYPE num) {
-        size_type new_node = ++cnt;  //动态建树
+    size_t update(size_t parent, int node_l, int node_r, size_t pos, NUM_TYPE num) {
+        size_t new_node = ++cnt;  //动态建树
         if (node_l == node_r) {
             tree[new_node].num = num;
             return new_node;
         }
-        size_type mid = (node_l + node_r) >> 1;
+        size_t mid = (size_t) (node_l + node_r) >> 1;
         //为了公用信息，先复制一份
         tree[new_node] = tree[parent];
         if (pos <= mid) {
@@ -127,12 +141,12 @@ private:
      * @param x 位置
      * @return 查询结果
      */
-    NUM_TYPE query(size_type node, int l, int r, size_type x) {
+    NUM_TYPE query(size_t node, int l, int r, size_t x) {
         //查询节点parent下位置x的值
         if (l == r) {
             return tree[node].num;
         }
-        size_type mid = (l + r) >> 1;
+        size_t mid = (size_t) (l + r) >> 1;
         NUM_TYPE res;
         if (x <= mid) {
             res = query(tree[node].left_son, l, mid, x);

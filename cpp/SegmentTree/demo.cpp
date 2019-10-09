@@ -21,28 +21,28 @@ const int MAX_N = (int) 1e5 + 25;
 int n, m, x, y, op;
 long long a[MAX_N], k;
 
-SegmentTree<long long, MAX_N> seg_tree;
+SegmentTree<long long> seg_tree((size_t) MAX_N);
 
 int main() {
-   scanf("%d %d", &n, &m);
-   for(int i = 1 ; i <= n; ++i) {
-       scanf("%lld", a + i);
-   }
-   seg_tree.build(n, a);
-   while(m--) {
-       scanf("%d", &op);
-       if(op == 1) {
-           scanf("%d %d %lld", &x, &y, &k);
-           if(x==y) {
-               seg_tree.update(x, k);
-           } else {
-               seg_tree.update(x, y, k);
-           }
-       } else {
-           scanf("%d %d", &x, &y);
-           printf("%lld\n", seg_tree.query(x, y));
-       }
-   }
-   seg_tree.clear(); //多组数据时用clear函数
+    scanf("%d %d", &n, &m);
+    for (int i = 1; i <= n; ++i) {
+        scanf("%lld", a + i);
+    }
+    seg_tree.build(n, a);
+    while (m--) {
+        scanf("%d", &op);
+        if (op == 1) {
+            scanf("%d %d %lld", &x, &y, &k);
+            if (x == y) {
+                seg_tree.update(x, k);
+            } else {
+                seg_tree.update(x, y, k);
+            }
+        } else {
+            scanf("%d %d", &x, &y);
+            printf("%lld\n", seg_tree.query(x, y));
+        }
+    }
+    seg_tree.clear(); //多组数据时用clear函数
     return 0;
 }

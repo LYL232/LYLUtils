@@ -8,15 +8,29 @@
 #include <algorithm>
 
 using namespace std;
+
 /**
  * 数组工具, 实现一些STL中没有但比较常用的功能
  * 非静态函数使用前需调用init初始化函数,会复制一份源序列的拷贝
  * @tparam NUM_TYPE
  * @tparam MAX_LEN
  */
-template<typename NUM_TYPE, int MAX_LEN>
+template<typename NUM_TYPE>
 class ArrayUtils {
 public:
+    /**
+     * 初始化, 需要指定最大的处理长度
+     * @param max_process_len
+     */
+    explicit ArrayUtils(size_t max_process_len) {
+        array = (NUM_TYPE *) malloc(max_process_len * sizeof(NUM_TYPE));
+        len = 0;
+    }
+
+    ~ArrayUtils() {
+        free(array);
+    }
+
     /**
      * 初始化序列长度,并复制一份输入序列
      * 注意:下标从1开始
@@ -54,7 +68,7 @@ public:
 
 private:
     int len;
-    NUM_TYPE array[MAX_LEN + 1];
+    NUM_TYPE *array;
 };
 
 #endif //LYL_UTILS_ARRAYUTILS_H

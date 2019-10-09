@@ -6,6 +6,7 @@
 
 
 #include <cstring>
+#include <malloc.h>
 
 /**
  * 树状数组:
@@ -19,9 +20,22 @@
  * @tparam NUM_TYPE 运算数类型
  * @tparam MAX_LEN 序列最长的长度
  */
-template<typename NUM_TYPE, int MAX_LEN>
+template<typename NUM_TYPE>
 class BinaryIndexTree {
 public:
+    /**
+     * 初始化, 需要指定最大处理规模
+     * @param max_process_len
+     */
+    explicit BinaryIndexTree(size_t max_process_len) {
+        tree = (NUM_TYPE *) malloc(max_process_len * sizeof(NUM_TYPE));
+        len = 0;
+    }
+
+    ~BinaryIndexTree() {
+        free(tree);
+    }
+
     /**
      * 清除树中所有的数据,包括可处理序列长度
      */
@@ -77,7 +91,7 @@ public:
     }
 
 private:
-    NUM_TYPE tree[MAX_LEN + 1];
+    NUM_TYPE *tree;
     int len;
 
     int low_bit(int x) {
