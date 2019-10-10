@@ -5,5 +5,4 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(${PROJECT_NAME}
         cpp
-        main.cpp
-        )
+        cpp/DanceLink/DanceLink.h cpp/DanceLink/demo.cpp)
