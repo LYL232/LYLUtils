@@ -4,7 +4,6 @@
 #ifndef LYL_UTILS_IOUTILS_H
 #define LYL_UTILS_IOUTILS_H
 
-#include <cstdio>
 #include <iostream>
 using namespace std;
 
