@@ -24,12 +24,12 @@ int main() {
     m = IOUtils::read();
     register size_t i, j;
     int f;
-    std::vector<pair<size_t, size_t> > sparse;
+    SparseMatrix<bool> sparse;
     for (i = 1; i <= n; i++) {
         for (j = 1; j <= m; j++) {
             f = IOUtils::read();
             if (f) {
-                sparse.emplace_back(i, j);
+                sparse.set(i, j, true);
             }
         }
     }

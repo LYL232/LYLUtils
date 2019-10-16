@@ -5,12 +5,9 @@
 #define LYL_UTILS_DANCELINK_H
 
 #include<cstring>
-#include<algorithm>
-#include <vector>
-
+#include "../Matrix/SparseMatrix.h"
 
 class DanceLinkX {
-    typedef std::pair<size_t, size_t> point;
 public:
     /**
      * 需指定最大处理规模, 最大处理规模等于矩阵元素个数加上列数, 即:
@@ -18,6 +15,8 @@ public:
      * @param _max_process_size
      */
     explicit DanceLinkX(size_t _max_process_size) {
+        num_of_selected = cnt = 0;
+        found = false;
         max_process_size = _max_process_size + 1;
         nodes = (Node *) malloc(max_process_size * sizeof(Node));
         head = (int *) malloc(max_process_size * sizeof(int));
@@ -32,10 +31,10 @@ public:
         free(selected);
     }
 
-    std::vector<size_t> dance(size_t rows, size_t cols, const std::vector<point> &sparse) {
+    std::vector<size_t> dance(size_t rows, size_t cols, const SparseMatrix<bool> &sparse) {
         init(cols);
         for (auto i : sparse) {
-            link(i.first, i.second);
+            link(i.row, i.col);
         }
         found = false;
         _dance(0);
@@ -47,6 +46,7 @@ public:
         }
         return res;
     }
+
 
 private:
     size_t max_process_size, cnt, num_of_selected;
