@@ -5,6 +5,7 @@
 #define LYL_UTILS_DANCELINK_H
 
 #include<cstring>
+#include <malloc.h>
 #include "../Matrix/SparseMatrix.h"
 
 class DanceLinkX {
