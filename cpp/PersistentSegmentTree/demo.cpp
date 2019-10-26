@@ -32,17 +32,17 @@ int main() {
     for (int i = 1; i <= n; ++i) {
         a[i] = IOUtils::read();
     }
-    ver_root[0] = persistentSegmentTree.init(n, a);
+    ver_root[0] = persistentSegmentTree.init((size_t)n, a);
     for (int i = 1; i <= m; ++i) {
         ver = IOUtils::read();
         op = IOUtils::read();
         if (op == 1) {
             loc = IOUtils::read();
             value = IOUtils::read();
-            ver_root[i] = persistentSegmentTree.update(ver_root[ver], loc, value);
+            ver_root[i] = persistentSegmentTree.update((size_t)ver_root[ver], (size_t)loc, value);
         } else {
             loc = IOUtils::read();
-            printf("%d\n", persistentSegmentTree.query(ver_root[ver], loc));
+            printf("%d\n", persistentSegmentTree.query((size_t)ver_root[ver], (size_t)loc));
             ver_root[i] = ver_root[ver];
         }
     }
