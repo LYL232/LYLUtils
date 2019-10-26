@@ -16,7 +16,7 @@
  */
 template<typename NUM_TYPE>
 class PersistentSegmentTree {
-    template<typename > friend
+    template<typename> friend
     class ArrayUtils;
 
 public:
@@ -228,12 +228,12 @@ private:
      * @param r
      */
     void print(size_t depth, size_t root, size_t l, size_t r) {
-        for(size_t i = 0; i < depth; ++i) {
+        for (size_t i = 0; i < depth; ++i) {
             putchar(' ');
             putchar(' ');
         }
         printf("[%u, %u] = %u\n", l, r, node[root].num);
-        if(l >= r) {
+        if (l >= r) {
             return;
         }
         auto mid = (l + r) >> 1;

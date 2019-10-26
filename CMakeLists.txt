@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(${PROJECT_NAME}
         cpp
-        cpp/DanceLink/DanceLink.h cpp/DanceLink/demo.cpp)
+        cpp/ArrayUtils/demo.cpp)
