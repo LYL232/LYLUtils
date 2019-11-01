@@ -9,6 +9,9 @@
  * 输出格式
  * 输出一行 N 个空格分隔的非负整数，表示 S 到每个点的距离。
  */
+#include "../IOUtils/IOUtils.h"
+#include "Dinic.h"
+
 #ifdef DEMO_DIJKSTRA
 #include <cstdio>
 #include "Dijkstra.h"
@@ -32,6 +35,7 @@ int main() {
 
 /**
  * 使用示例: tarjan 算法求强联通分量
+ * 判题地址:https://www.luogu.org/problem/P1726
  * 题目描述
  * 在幻想乡，上白泽慧音是以知识渊博闻名的老师。
  * 春雪异变导致人间之里的很多道路都被大雪堵塞，
@@ -99,6 +103,36 @@ int main() {
             return 0;
         }
     }
+    return 0;
+}
+#endif
+
+/**
+ * 使用示例: dinic 算法求网络流最大流题目描述
+ * 判题地址:https://www.luogu.org/problem/P3376
+ * 如题，给出一个网络图，以及其源点和汇点，求出其网络最大流。
+ * 输入格式
+ * 第一行包含四个正整数N、M、S、T，分别表示点的个数、有向边的个数、源点序号、汇点序号。
+ * 接下来M行每行包含三个正整数ui、vi、wi，表示第i条有向边从ui出发，到达vi，边权为wi（即该边最大流量为wi）
+ * 输出格式
+ * 一行，包含一个正整数，即为该网络的最大流。
+ */
+#ifdef DEMO_DINIC
+int n, m, src, des, u, v, w;
+
+int main() {
+    n = IOUtils::read();
+    m = IOUtils::read();
+    src = IOUtils::read();
+    des = IOUtils::read();
+    Dinic<int, 0x7fffffff> dinic((size_t) n, (size_t) m);
+    while(m--) {
+        u = IOUtils::read();
+        v = IOUtils::read();
+        w = IOUtils::read();
+        dinic.add_edge((size_t)u, (size_t)v, w);
+    }
+    printf("%d\n", dinic.solve((size_t )src, (size_t)des));
     return 0;
 }
 #endif
