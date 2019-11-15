@@ -3,6 +3,7 @@
 #pragma ide diagnostic ignored "OCUnusedStructInspection"
 #ifndef LYL_UTILS_QUERYPERFORMANCETIMER_H
 #define LYL_UTILS_QUERYPERFORMANCETIMER_H
+#include <windows.h>
 #include <winbase.h>
 /**
  * 基于WIN32API的高精度计时器
