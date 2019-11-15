@@ -13,6 +13,7 @@
  */
 template<typename NUM_TYPE>
 class Matrix {
+    typedef unsigned int counter;
 public:
     NUM_TYPE **elements;
 
@@ -37,7 +38,7 @@ public:
         col = matrix.col;
         apply_mem();
         const size_t col_size = sizeof(NUM_TYPE) * col;
-        for (register size_t i = 0; i < row; ++i) {
+        for (counter i = 0; i < row; ++i) {
             memcpy(elements[i], matrix.elements[i], col_size);
         }
     }
@@ -59,7 +60,7 @@ public:
         apply_mem();
         if (set_zero) {
             const size_t col_size = col * sizeof(NUM_TYPE);
-            for (register size_t i = 0; i < row; ++i) {
+            for (counter i = 0; i < row; ++i) {
                 memset(elements[i], 0, col_size);
             }
         }
@@ -71,13 +72,13 @@ private:
     void apply_mem() {
         elements = (NUM_TYPE **) malloc(row * sizeof(NUM_TYPE *));
         const size_t col_size = col * sizeof(NUM_TYPE);
-        for (register size_t i = 0; i < row; ++i) {
+        for (counter i = 0; i < row; ++i) {
             elements[i] = (NUM_TYPE *) malloc(col_size);
         }
     }
 
     void free_mem() {
-        for (register size_t i = 0; i < row; ++i) {
+        for (counter i = 0; i < row; ++i) {
             free(elements[i]);
         }
         free(elements);

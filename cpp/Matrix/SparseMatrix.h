@@ -14,10 +14,11 @@
  */
 template<typename NUM_TYPE>
 class SparseMatrix {
+    typedef unsigned int counter;
 public:
 
     struct PointValue {
-        size_t row, col;
+        counter row, col;
         NUM_TYPE value;
 
         PointValue() {
@@ -25,7 +26,7 @@ public:
             value = 0;
         }
 
-        PointValue(size_t _row, size_t _col, NUM_TYPE _value) {
+        PointValue(counter _row, counter _col, NUM_TYPE _value) {
             row = _row;
             col = _col;
             value = _value;
@@ -124,7 +125,7 @@ public:
      * @param _rows 行数
      * @param _cols 列数
      */
-    SparseMatrix(size_t _rows, size_t _cols) {
+    SparseMatrix(counter _rows, counter _cols) {
         rows = _rows;
         cols = _cols;
     }
@@ -135,19 +136,19 @@ public:
         elements = sparseMatrix.elements;
     }
 
-    inline void set_rows(size_t _rows) {
+    inline void set_rows(counter _rows) {
         rows = _rows;
     }
 
-    inline void set_cols(size_t _cols) {
+    inline void set_cols(counter _cols) {
         cols = _cols;
     }
 
-    inline size_t get_rows() const {
+    inline counter get_rows() const {
         return rows;
     }
 
-    inline size_t get_cols() const {
+    inline counter get_cols() const {
         return cols;
     }
 
@@ -156,7 +157,7 @@ public:
      * @param _row
      * @param _col
      */
-    inline void set(size_t _row, size_t _col, NUM_TYPE _value) {
+    inline void set(counter _row, counter _col, NUM_TYPE _value) {
         rows = _row > rows ? _row : rows;
         cols = _col > cols ? _col : cols;
         elements.emplace_back(_row, _col, _value);
@@ -179,7 +180,7 @@ public:
 
 protected:
     // 行数和列数
-    size_t rows, cols;
+    counter rows, cols;
     //稀疏矩阵非0元素的点
     std::vector<PointValue> elements;
 };

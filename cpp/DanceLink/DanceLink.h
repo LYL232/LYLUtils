@@ -5,24 +5,24 @@
 #define LYL_UTILS_DANCELINK_H
 
 #include<cstring>
-#include <malloc.h>
 #include "../Matrix/SparseMatrix.h"
 
 class DanceLinkX {
+    typedef unsigned int counter;
 public:
     /**
      * 需指定最大处理规模, 最大处理规模等于矩阵元素个数加上列数, 即:
      * 对于n行m列矩阵, max_process_size = n*m + m
      * @param _max_process_size
      */
-    explicit DanceLinkX(size_t _max_process_size) {
+    explicit DanceLinkX(counter _max_process_size) {
         num_of_selected = cnt = 0;
         found = false;
         max_process_size = _max_process_size + 1;
         nodes = (Node *) malloc(max_process_size * sizeof(Node));
         head = (int *) malloc(max_process_size * sizeof(int));
-        num_of_nodes_of_col = (size_t *) malloc(max_process_size * sizeof(int));
-        selected = (size_t *) malloc(max_process_size * sizeof(size_t));
+        num_of_nodes_of_col = (counter *) malloc(max_process_size * sizeof(counter));
+        selected = (counter *) malloc(max_process_size * sizeof(counter));
     };
 
     ~DanceLinkX() {
@@ -32,16 +32,16 @@ public:
         free(selected);
     }
 
-    std::vector<size_t> dance(size_t rows, size_t cols, const SparseMatrix<bool> &sparse) {
+    std::vector<counter> dance(counter rows, counter cols, const SparseMatrix<bool> &sparse) {
         init(cols);
         for (auto i : sparse) {
             link(i.row, i.col);
         }
         found = false;
         _dance(0);
-        std::vector<size_t> res;
+        std::vector<counter> res;
         if (found) {
-            for (register size_t i = 0; i < num_of_selected; i++) {
+            for (counter i = 0; i < num_of_selected; i++) {
                 res.push_back(selected[i]);
             }
         }
@@ -50,27 +50,27 @@ public:
 
 
 private:
-    size_t max_process_size, cnt, num_of_selected;
+    counter max_process_size, cnt, num_of_selected;
     struct Node {
         //每个点的左右上下指针，所在行列
         int l, r, u, d, col, row;
     } *nodes;
     int *head;//每行的头结点
     bool found;
-    size_t *num_of_nodes_of_col,//每列的节点数
+    counter *num_of_nodes_of_col,//每列的节点数
             *selected;//选了哪几行
 
     /**
      * 搜索答案
      * @param deep 搜索深度
      */
-    void _dance(size_t deep) {
+    void _dance(counter deep) {
         if (nodes[0].r == 0) {
             num_of_selected = deep;
             found = true;
             return;
         }
-        register int i, j, c = nodes[0].r;
+        int i, j, c = nodes[0].r;
         for (i = nodes[0].r; i != 0; i = nodes[i].r) {
             if (num_of_nodes_of_col[i] < num_of_nodes_of_col[c]) {
                 c = i;
@@ -78,7 +78,7 @@ private:
         }
         rm_col(c);
         for (i = nodes[c].d; i != c; i = nodes[i].d) {
-            selected[deep] = (size_t) nodes[i].row;
+            selected[deep] = (counter) nodes[i].row;
             for (j = nodes[i].r; j != i; j = nodes[j].r) {
                 rm_col(nodes[j].col);
             }
@@ -98,7 +98,7 @@ private:
      * @param _row
      * @param _col
      */
-    void link(size_t _row, size_t _col) {
+    void link(counter _row, counter _col) {
         num_of_nodes_of_col[_col]++;
         nodes[cnt].row = _row;
         nodes[cnt].col = _col;
@@ -109,7 +109,7 @@ private:
         if (head[_row] < 0) {
             head[_row] = nodes[cnt].r = nodes[cnt].l = cnt;
         } else {
-            nodes[cnt].r = (size_t) head[_row];
+            nodes[cnt].r = (counter) head[_row];
             nodes[cnt].l = nodes[head[_row]].l;
             nodes[nodes[head[_row]].l].r = cnt;
             nodes[head[_row]].l = cnt;
@@ -122,10 +122,10 @@ private:
      * num 等于需要处理的矩阵的列数
      * @param num
      */
-    void init(size_t num) {
+    void init(counter num) {
         found = false;
         num_of_selected = 0;
-        for (register size_t i = 0; i <= num; i++) {
+        for (counter i = 0; i <= num; i++) {
             nodes[i].r = i + 1;
             nodes[i].l = i - 1;
             nodes[i].u = nodes[i].d = i;
